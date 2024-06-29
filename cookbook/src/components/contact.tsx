@@ -3,8 +3,7 @@
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { sendEmail } from "@/utils/send-email";
-import type { AppProps } from "next/app";
-import React from "react";
+import React, { useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 
 export type FormData = {
@@ -13,30 +12,31 @@ export type FormData = {
   message: string;
 };
 
+export type FormDataWithToken = FormData & {
+  token: string;
+};
+
 const Contact: FC = () => {
   const { register, handleSubmit } = useForm<FormData>();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
-  function onSubmit(data: FormData) {
-    sendEmail(data);
-  }
-
-  const handleClick = async ($event: any) => {
-    $event.preventDefault();
+  const onSubmit = async (data: FormData) => {
     try {
-      recaptchaRef.current.reset();
-      const token = await recaptchaRef.current.executeAsync();
-      console.log("token is ", token);
+      const token = await recaptchaRef.current?.executeAsync();
+      console.log("Token is", token);
+
       if (token) {
-        alert("Form submitted");
+        const dataWithToken: FormDataWithToken = { ...data, token };
+        await sendEmail(dataWithToken);
+        alert("Form submitted successfully");
       } else {
         alert("Error getting token");
       }
     } catch (error) {
-      console.log("error in handleClick ", error);
+      console.error("Error in onSubmit", error);
+      alert("There was an error submitting the form");
     }
   };
-
-  const recaptchaRef: any = React.createRef();
 
   const onChange = () => {
     // on captcha change
@@ -48,44 +48,44 @@ const Contact: FC = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="">
-        <label htmlFor="name" className="">
+      <div className="form-group">
+        <label htmlFor="name" className="form-label">
           Full Name
         </label>
         <input
           type="text"
           placeholder="Full Name"
-          className=""
+          className="form-input"
           id="name"
           {...register("name", { required: true })}
         />
       </div>
-      <div className="">
-        <label htmlFor="email" className="">
+      <div className="form-group">
+        <label htmlFor="email" className="form-label">
           Email Address
         </label>
         <input
           type="email"
           placeholder="example@domain.com"
-          className=""
+          className="form-input"
           id="email"
           {...register("email", { required: true })}
         />
       </div>
-      <div className="">
-        <label htmlFor="message" className="">
+      <div className="form-group">
+        <label htmlFor="message" className="form-label">
           Message
         </label>
         <textarea
           rows={4}
           placeholder="Type your message"
-          className=""
+          className="form-input"
           id="message"
           {...register("message", { required: true })}
         ></textarea>
       </div>
       <div>
-        <button className="" onClick={handleClick}>
+        <button type="submit" className="form-button">
           Submit
         </button>
       </div>
