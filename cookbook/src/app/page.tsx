@@ -50,7 +50,7 @@ export default async function IndexPage() {
             {recipes.length > 0 ? (
               recipes.map((recipe) => (
                 <li key={recipe._id}>
-                  <div className="list-element">
+                  <div className="list-element box-shadow">
                     {recipe.slug?.current ? (
                       <Link href={`/recipes/${recipe.slug.current}`}>
                         <h2>{recipe?.title}</h2>

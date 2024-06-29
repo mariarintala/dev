@@ -85,7 +85,7 @@ const Contact: FC = () => {
         ></textarea>
       </div>
       <div>
-        <button type="submit" className="form-button">
+        <button type="submit" className="form-button" role="button">
           Submit
         </button>
       </div>
