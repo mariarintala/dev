@@ -209,3 +209,19 @@ button:hover {
   -o-transform: translateY(-15px);
   transform: translateY(-15px);
 }
+
+@media (max-width: 600px) {
+  main {
+    padding: 2rem !important;
+  }
+  .gridcontainer {
+    flex-direction: column !important;
+  }
+  img {
+    width: 100% !important;
+    height: auto !important;
+  }
+  nav {
+    padding: 2rem !important;
+  }
+}
